@@ -200,6 +200,12 @@ class WorkflowParams implements Serializable {
      * Useful for when interacting with external services signed by an internal CA.
      * If not specified then ignored. */
     String trustedCABundleConfigMapName = null
+
+    /*
+     * Git source URL of custom step implementers that will be checked out and
+     * made available to all PSR containers.
+     */
+    String customStepImplementersSourceUrl = null
 }
 
 // Java Backend Reference Jenkinsfile
@@ -294,6 +300,31 @@ def call(Map paramsMap) {
     String PSR_CONFIG_ARG = params.separatePlatformConfig ?
         "${PLATFORM_CONFIG_DIR} ${params.stepRunnerConfigDir}" : "${params.stepRunnerConfigDir}"
 
+    String CUSTOM_IMPLEMENTERS_VOLUMES = params.customStepImplementersSourceUrl ? """
+        - name: custom-implementers
+          emptyDir: {}
+    """ : ""
+
+    String CUSTOM_IMPLEMENTERS_MOUNTS = params.customStepImplementersSourceUrl ? """
+        - mountPath: /opt/custom-implementers
+          name: custom-implementers
+    """ : ""
+
+    String CUSTOM_IMPLEMENTERS_INIT_CONTAINER = params.customStepImplementersSourceUrl ? """
+        initContainers:
+        - name: custom-implementers-clone
+          image: "${params.workflowWorkerImageDefault}"
+          imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
+          command:
+          - '/bin/sh'
+          - '-c'
+          - |
+            git clone "${params.customStepImplementersSourceUrl}" /tmp/source
+            mkdir /opt/custom-implementers/user
+            cp -rv /tmp/source/* /opt/custom-implementers/user/
+    """ : ""
+
     pipeline {
         options {
             ansiColor('xterm')
@@ -311,6 +342,7 @@ def call(Map paramsMap) {
             jenkins-build-id: ${env.BUILD_ID}
     spec:
         serviceAccount: ${params.workflowServiceAccountName}
+        ${CUSTOM_IMPLEMENTERS_INIT_CONTAINER}
         containers:
         - name: ${WORKFLOW_WORKER_NAME_DEFAULT}
           image: "${params.workflowWorkerImageDefault}"
@@ -323,6 +355,7 @@ def call(Map paramsMap) {
             name: pgp-private-keys
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_AGENT}
           image: "${params.workflowWorkerImageAgent}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -334,6 +367,7 @@ def call(Map paramsMap) {
             name: pgp-private-keys
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_UNIT_TEST}
           image: "${params.workflowWorkerImageUnitTest}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -343,6 +377,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_PACKAGE}
           image: "${params.workflowWorkerImagePackage}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -352,6 +387,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_STATIC_CODE_ANALYSIS}
           image: "${params.workflowWorkerImageStaticCodeAnalysis}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -361,6 +397,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_PUSH_ARTIFACTS}
           image: "${params.workflowWorkerImagePushArtifacts}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -370,6 +407,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_CONTAINER_OPERATIONS}
           image: "${params.workflowWorkerImageContainerOperations}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -384,6 +422,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_COMPLIANCE_SCAN}
           image: "${params.workflowWorkerImageContainerImageStaticComplianceScan}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -393,6 +432,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_VULNERABILITY_SCAN}
           image: "${params.workflowWorkerImageContainerImageStaticVulnerabilityScan}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -402,6 +442,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_DEPLOY}
           image: "${params.workflowWorkerImageDeploy}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -411,6 +452,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_VALIDATE_ENVIRONMENT_CONFIGURATION}
           image: "${params.workflowWorkerImageValidateEnvironmentConfiguration}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -420,6 +462,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_UAT}
           image: "${params.workflowWorkerImageUAT}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -429,6 +472,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_AUTOMATED_GOVERNANCE}
           image: "${params.workflowWorkerImageAutomatedGovernance}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -440,6 +484,7 @@ def call(Map paramsMap) {
             name: pgp-private-keys
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         volumes:
         - name: home-ploigos
           emptyDir: {}
@@ -448,6 +493,7 @@ def call(Map paramsMap) {
             secretName: ${params.pgpKeysSecretName}
         ${PLATFORM_VOLUMES}
         ${TLS_VOLUMES}
+        ${CUSTOM_IMPLEMENTERS_VOLUMES}
     """
             }
         }
@@ -568,6 +614,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-metadata
@@ -583,6 +633,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step tag-source
@@ -598,6 +652,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step unit-test
@@ -613,6 +671,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step package
@@ -628,6 +690,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step static-code-analysis
@@ -643,6 +709,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step push-artifacts
@@ -658,6 +728,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step create-container-image
@@ -675,6 +749,10 @@ def call(Map paramsMap) {
                                             set -eu -o pipefail
 
                                             source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                            if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                            then
+                                              export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                            fi
                                             psr \
                                                 --config ${PSR_CONFIG_ARG} \
                                                 --step container-image-static-compliance-scan
@@ -690,6 +768,10 @@ def call(Map paramsMap) {
                                             set -eu -o pipefail
 
                                             source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                            if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                            then
+                                              export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                            fi
                                             psr \
                                                 --config ${PSR_CONFIG_ARG} \
                                                 --step container-image-static-vulnerability-scan
@@ -707,6 +789,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step push-container-image
@@ -722,6 +808,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step sign-container-image
@@ -738,6 +828,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence
@@ -773,6 +867,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step audit-attestation \
@@ -789,6 +887,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step deploy \
@@ -805,6 +907,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step validate-environment-configuration \
@@ -821,6 +927,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step uat \
@@ -838,6 +948,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence \
@@ -875,6 +989,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step audit-attestation \
@@ -891,6 +1009,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step deploy \
@@ -907,6 +1029,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step validate-environment-configuration \
@@ -923,6 +1049,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step uat \
@@ -940,6 +1070,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence \
@@ -976,6 +1110,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step audit-attestation \
@@ -992,6 +1130,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step deploy \
@@ -1008,6 +1150,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step validate-environment-configuration \
@@ -1025,6 +1171,10 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                    then
+                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                    fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence \
@@ -1044,6 +1194,10 @@ def call(Map paramsMap) {
                         set -eu -o pipefail
 
                         source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                        if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                        then
+                          export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                        fi
                         psr \
                             --config ${PSR_CONFIG_ARG} \
                             --step report
