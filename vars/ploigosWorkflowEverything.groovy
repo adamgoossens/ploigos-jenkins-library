@@ -616,7 +616,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -635,7 +635,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -654,7 +654,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -673,7 +673,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -692,7 +692,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -711,7 +711,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -730,7 +730,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -751,7 +751,7 @@ def call(Map paramsMap) {
                                             source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                             if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                             then
-                                              export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                              export PYTHONPATH="/opt/custom-implementers"
                                             fi
                                             psr \
                                                 --config ${PSR_CONFIG_ARG} \
@@ -770,7 +770,7 @@ def call(Map paramsMap) {
                                             source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                             if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                             then
-                                              export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                              export PYTHONPATH="/opt/custom-implementers"
                                             fi
                                             psr \
                                                 --config ${PSR_CONFIG_ARG} \
@@ -791,7 +791,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -810,7 +810,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -830,7 +830,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -869,7 +869,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -889,7 +889,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -909,7 +909,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -929,7 +929,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -950,7 +950,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -991,7 +991,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1011,7 +1011,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1031,7 +1031,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1051,7 +1051,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1072,7 +1072,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1112,7 +1112,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1132,7 +1132,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1152,7 +1152,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1173,7 +1173,7 @@ def call(Map paramsMap) {
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                                     if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                                     then
-                                      export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                                      export PYTHONPATH="/opt/custom-implementers"
                                     fi
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
@@ -1196,7 +1196,7 @@ def call(Map paramsMap) {
                         source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
                         if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
                         then
-                          export PYTHONPATH="/opt/custom-implementers:\$PYTHONPATH"
+                          export PYTHONPATH="/opt/custom-implementers"
                         fi
                         psr \
                             --config ${PSR_CONFIG_ARG} \
