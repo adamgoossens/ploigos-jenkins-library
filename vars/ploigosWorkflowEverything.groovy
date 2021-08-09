@@ -306,23 +306,8 @@ def call(Map paramsMap) {
     """ : ""
 
     String CUSTOM_IMPLEMENTERS_MOUNTS = params.customStepImplementersSourceUrl ? """
-        - mountPath: /opt/custom-implementers
-          name: custom-implementers
-    """ : ""
-
-    String CUSTOM_IMPLEMENTERS_INIT_CONTAINER = params.customStepImplementersSourceUrl ? """
-        initContainers:
-        - name: custom-implementers-clone
-          image: "${params.workflowWorkerImageDefault}"
-          imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
-          ${CUSTOM_IMPLEMENTERS_MOUNTS}
-          command:
-          - '/bin/sh'
-          - '-c'
-          - |
-            git clone "${params.customStepImplementersSourceUrl}" /tmp/source
-            mkdir /opt/custom-implementers/user
-            cp -rv /tmp/source/* /opt/custom-implementers/user/
+            - mountPath: /opt/custom-implementers
+              name: custom-implementers
     """ : ""
 
     pipeline {
@@ -342,7 +327,6 @@ def call(Map paramsMap) {
             jenkins-build-id: ${env.BUILD_ID}
     spec:
         serviceAccount: ${params.workflowServiceAccountName}
-        ${CUSTOM_IMPLEMENTERS_INIT_CONTAINER}
         containers:
         - name: ${WORKFLOW_WORKER_NAME_DEFAULT}
           image: "${params.workflowWorkerImageDefault}"
@@ -583,6 +567,17 @@ def call(Map paramsMap) {
                                         echo "****************************************************"
                                         python -m pip show ${STEP_RUNNER_PACKAGE_NAME}
                                     '''
+
+                                    sh """
+                                        #!/bin/sh
+                                        if [ "\${VERBOSE}" == "true" ]; then set -x; else set +x; fi
+                                        set -e -o pipefail
+
+                                        if [ "z${params.customStepImplementersSourceUrl}" != "z"]
+                                        then
+                                          git clone ${params.customStepImplementersSourceUrl} /opt/custom-implementers/user
+                                        fi
+                                    """
                                 }
                             }
                         }
@@ -858,7 +853,7 @@ def call(Map paramsMap) {
                     }
                 }
                 stages {
-		    // DEV Audit Attestation
+        // DEV Audit Attestation
                     stage('DEV: Audit Attestation') {
                         steps {
                             container("${WORKFLOW_WORKER_NAME_AUTOMATED_GOVERNANCE}") {
@@ -980,7 +975,7 @@ def call(Map paramsMap) {
                 }
 
                 stages {
-		    // TEST Audit Attestation
+        // TEST Audit Attestation
                     stage('TEST: Audit Attestation') {
                         steps {
                             container("${WORKFLOW_WORKER_NAME_AUTOMATED_GOVERNANCE}") {
@@ -1101,7 +1096,7 @@ def call(Map paramsMap) {
                     }
                 }
                 stages {
-		    // PROD Audit Attestation
+        // PROD Audit Attestation
                     stage('PROD: Audit Attestation') {
                         steps {
                             container("${WORKFLOW_WORKER_NAME_AUTOMATED_GOVERNANCE}") {
