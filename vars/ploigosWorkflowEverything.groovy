@@ -310,6 +310,10 @@ def call(Map paramsMap) {
             name: custom-implementers
     """ : ""
 
+    String PYTHONPATH = params.customStepImplementersSourceUrl ? """
+    export PYTHONPATH=/opt/custom-implementers
+    """ ? ""
+
     pipeline {
         options {
             ansiColor('xterm')
@@ -612,10 +616,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-metadata
@@ -631,10 +632,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step tag-source
@@ -650,10 +648,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step unit-test
@@ -669,10 +664,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step package
@@ -688,10 +680,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step static-code-analysis
@@ -707,10 +696,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step push-artifacts
@@ -726,10 +712,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step create-container-image
@@ -747,10 +730,7 @@ def call(Map paramsMap) {
                                             set -eu -o pipefail
 
                                             source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                            if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                            then
-                                              export PYTHONPATH="/opt/custom-implementers"
-                                            fi
+                                            ${PYTHONPATH}
                                             psr \
                                                 --config ${PSR_CONFIG_ARG} \
                                                 --step container-image-static-compliance-scan
@@ -766,10 +746,7 @@ def call(Map paramsMap) {
                                             set -eu -o pipefail
 
                                             source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                            if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                            then
-                                              export PYTHONPATH="/opt/custom-implementers"
-                                            fi
+                                            ${PYTHONPATH}
                                             psr \
                                                 --config ${PSR_CONFIG_ARG} \
                                                 --step container-image-static-vulnerability-scan
@@ -787,10 +764,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step push-container-image
@@ -806,10 +780,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step sign-container-image
@@ -826,10 +797,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence
@@ -865,10 +833,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step audit-attestation \
@@ -885,10 +850,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step deploy \
@@ -905,10 +867,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step validate-environment-configuration \
@@ -925,10 +884,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step uat \
@@ -946,10 +902,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence \
@@ -987,10 +940,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step audit-attestation \
@@ -1007,10 +957,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step deploy \
@@ -1027,10 +974,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step validate-environment-configuration \
@@ -1047,10 +991,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step uat \
@@ -1068,10 +1009,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence \
@@ -1108,10 +1046,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step audit-attestation \
@@ -1128,10 +1063,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step deploy \
@@ -1148,10 +1080,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step validate-environment-configuration \
@@ -1169,10 +1098,7 @@ def call(Map paramsMap) {
                                     set -eu -o pipefail
 
                                     source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                                    then
-                                      export PYTHONPATH="/opt/custom-implementers"
-                                    fi
+                                    ${PYTHONPATH}
                                     psr \
                                         --config ${PSR_CONFIG_ARG} \
                                         --step generate-evidence \
@@ -1192,10 +1118,7 @@ def call(Map paramsMap) {
                         set -eu -o pipefail
 
                         source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                        if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
-                        then
-                          export PYTHONPATH="/opt/custom-implementers"
-                        fi
+                        ${PYTHONPATH}
                         psr \
                             --config ${PSR_CONFIG_ARG} \
                             --step report
