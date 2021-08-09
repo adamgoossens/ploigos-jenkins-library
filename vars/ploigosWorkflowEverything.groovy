@@ -312,7 +312,7 @@ def call(Map paramsMap) {
 
     String PYTHONPATH = params.customStepImplementersSourceUrl ? """
     export PYTHONPATH=/opt/custom-implementers
-    """ ? ""
+    """ : ""
 
     pipeline {
         options {
