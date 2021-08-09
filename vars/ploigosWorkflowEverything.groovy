@@ -573,7 +573,7 @@ def call(Map paramsMap) {
                                         if [ "\${VERBOSE}" == "true" ]; then set -x; else set +x; fi
                                         set -e -o pipefail
 
-                                        if [ -z "${params.customStepImplementersSourceUrl}" ]
+                                        if [ ! -z "${params.customStepImplementersSourceUrl}" ]
                                         then
                                           echo "*****************************************************************************"
                                           echo "* Clone custom step implementers repository to /opt/custom-implementers/usr *"
