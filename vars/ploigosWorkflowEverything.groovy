@@ -306,8 +306,8 @@ def call(Map paramsMap) {
     """ : ""
 
     String CUSTOM_IMPLEMENTERS_MOUNTS = params.customStepImplementersSourceUrl ? """
-            - mountPath: /opt/custom-implementers
-              name: custom-implementers
+          - mountPath: /opt/custom-implementers
+            name: custom-implementers
     """ : ""
 
     pipeline {
