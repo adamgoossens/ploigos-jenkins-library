@@ -196,6 +196,12 @@ class WorkflowParams implements Serializable {
      * Useful for when interacting with external services signed by an internal CA.
      * If not specified then ignored. */
     String trustedCABundleConfigMapName = null
+
+    /*
+     * Git source URL of custom step implementers that will be checked out and
+     * made available to all PSR containers.
+     */
+    String customStepImplementersSourceUrl = null
 }
 
 // Java Backend Reference Jenkinsfile
@@ -289,6 +295,16 @@ def call(Map paramsMap) {
     String PSR_CONFIG_ARG = params.separatePlatformConfig ?
         "${PLATFORM_CONFIG_DIR} ${params.stepRunnerConfigDir}" : "${params.stepRunnerConfigDir}"
 
+    String CUSTOM_IMPLEMENTERS_VOLUMES = params.customStepImplementersSourceUrl ? """
+          - name: custom-implementers
+            emptyDir: {}
+    """ : ""
+
+    String CUSTOM_IMPLEMENTERS_MOUNTS = params.customStepImplementersSourceUrl ? """
+        - mountPath: /opt/custom-implementers
+          name: custom-implementers
+    """ : ""
+
     pipeline {
         options {
             ansiColor('xterm')
@@ -318,6 +334,7 @@ def call(Map paramsMap) {
             name: pgp-private-keys
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_UNIT_TEST}
           image: "${params.workflowWorkerImageUnitTest}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -327,6 +344,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_PACKAGE}
           image: "${params.workflowWorkerImagePackage}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -336,6 +354,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_STATIC_CODE_ANALYSIS}
           image: "${params.workflowWorkerImageStaticCodeAnalysis}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -345,6 +364,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_PUSH_ARTIFACTS}
           image: "${params.workflowWorkerImagePushArtifacts}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -354,6 +374,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_CONTAINER_OPERATIONS}
           image: "${params.workflowWorkerImageContainerOperations}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -368,6 +389,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_COMPLIANCE_SCAN}
           image: "${params.workflowWorkerImageContainerImageStaticComplianceScan}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -377,6 +399,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_VULNERABILITY_SCAN}
           image: "${params.workflowWorkerImageContainerImageStaticVulnerabilityScan}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -386,6 +409,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_DEPLOY}
           image: "${params.workflowWorkerImageDeploy}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -404,6 +428,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_UAT}
           image: "${params.workflowWorkerImageUAT}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -413,6 +438,7 @@ def call(Map paramsMap) {
             name: home-ploigos
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         - name: ${WORKFLOW_WORKER_NAME_AUTOMATED_GOVERNANCE}
           image: "${params.workflowWorkerAutomatedGovernance}"
           imagePullPolicy: "${params.workflowWorkersImagePullPolicy}"
@@ -424,6 +450,7 @@ def call(Map paramsMap) {
             name: pgp-private-keys
           ${PLATFORM_MOUNTS}
           ${TLS_MOUNTS}
+          ${CUSTOM_IMPLEMENTERS_MOUNTS}
         volumes:
         - name: home-ploigos
           emptyDir: {}
@@ -432,6 +459,7 @@ def call(Map paramsMap) {
             secretName: ${params.pgpKeysSecretName}
         ${PLATFORM_VOLUMES}
         ${TLS_VOLUMES}
+        ${CUSTOM_IMPLEMENTERS_VOLUMES}
     """
             }
         }
@@ -521,6 +549,17 @@ def call(Map paramsMap) {
                                         echo "****************************************************"
                                         python -m pip show ${STEP_RUNNER_PACKAGE_NAME}
                                     '''
+
+                                    sh """
+                                        #!/bin/sh
+                                        if [ "\${VERBOSE}" == "true" ]; then set -x; else set +x; fi
+                                        set -e -o pipefail
+
+                                        if [ "z${params.customStepImplementersSourceUrl}" != "z" ]
+                                        then
+                                          git clone ${params.customStepImplementersSourceUrl} /opt/custom-implementers/user
+                                        fi
+                                    """
                                 }
                             }
                         }
