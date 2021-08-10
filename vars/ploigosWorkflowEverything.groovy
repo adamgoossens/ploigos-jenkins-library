@@ -583,6 +583,7 @@ def call(Map paramsMap) {
                                           echo "* Clone custom step implementers repository to /opt/custom-implementers/usr *"
                                           echo "*****************************************************************************"
                                           git clone ${params.customStepImplementersSourceUrl} /opt/custom-implementers/user
+                                          ls -l /opt/custom-implementers/user
                                         fi
                                     """
                                 }
@@ -720,6 +721,22 @@ def call(Map paramsMap) {
                             }
                         }
                     }
+                    stage('CI: Push Container Image to Repository') {
+                        steps {
+                            container("${WORKFLOW_WORKER_NAME_CONTAINER_OPERATIONS}") {
+                                sh """
+                                    if [ "${params.verbose}" == "true" ]; then set -x; else set +x; fi
+                                    set -eu -o pipefail
+
+                                    source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    ${PYTHONPATH}
+                                    psr \
+                                        --config ${PSR_CONFIG_ARG} \
+                                        --step push-container-image
+                                """
+                            }
+                        }
+                    }
                     stage('CI: Static Image Scan') {
                         parallel {
                             stage('CI: Static Image Scan: Compliance') {
@@ -753,22 +770,6 @@ def call(Map paramsMap) {
                                         """
                                     }
                                 }
-                            }
-                        }
-                    }
-                    stage('CI: Push Container Image to Repository') {
-                        steps {
-                            container("${WORKFLOW_WORKER_NAME_CONTAINER_OPERATIONS}") {
-                                sh """
-                                    if [ "${params.verbose}" == "true" ]; then set -x; else set +x; fi
-                                    set -eu -o pipefail
-
-                                    source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                    ${PYTHONPATH}
-                                    psr \
-                                        --config ${PSR_CONFIG_ARG} \
-                                        --step push-container-image
-                                """
                             }
                         }
                     }
