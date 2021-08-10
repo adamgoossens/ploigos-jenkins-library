@@ -737,39 +737,35 @@ def call(Map paramsMap) {
                             }
                         }
                     }
-                    stage('CI: Static Image Scan') {
-                        parallel {
-                            stage('CI: Static Image Scan: Compliance') {
-                                steps {
-                                    container("${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_COMPLIANCE_SCAN}") {
-                                        sh """
-                                            if [ "${params.verbose}" == "true" ]; then set -x; else set +x; fi
-                                            set -eu -o pipefail
+                    stage('CI: Static Image Scan: Compliance') {
+                        steps {
+                            container("${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_COMPLIANCE_SCAN}") {
+                                sh """
+                                    if [ "${params.verbose}" == "true" ]; then set -x; else set +x; fi
+                                    set -eu -o pipefail
 
-                                            source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                            ${PYTHONPATH}
-                                            psr \
-                                                --config ${PSR_CONFIG_ARG} \
-                                                --step container-image-static-compliance-scan
-                                        """
-                                    }
-                                }
+                                    source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    ${PYTHONPATH}
+                                    psr \
+                                        --config ${PSR_CONFIG_ARG} \
+                                        --step container-image-static-compliance-scan
+                                """
                             }
-                            stage('CI: Static Image Scan: Vulnerability') {
-                                steps {
-                                    container("${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_VULNERABILITY_SCAN}") {
-                                        sh """
-                                            if [ "${params.verbose}" == "true" ]; then set -x; else set +x; fi
-                                            set -eu -o pipefail
+                        }
+                    }
+                    stage('CI: Static Image Scan: Vulnerability') {
+                        steps {
+                            container("${WORKFLOW_WORKER_NAME_CONTAINER_IMAGE_STATIC_VULNERABILITY_SCAN}") {
+                                sh """
+                                    if [ "${params.verbose}" == "true" ]; then set -x; else set +x; fi
+                                    set -eu -o pipefail
 
-                                            source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
-                                            ${PYTHONPATH}
-                                            psr \
-                                                --config ${PSR_CONFIG_ARG} \
-                                                --step container-image-static-vulnerability-scan
-                                        """
-                                    }
-                                }
+                                    source ${WORKFLOW_WORKER_VENV_PATH}/bin/activate
+                                    ${PYTHONPATH}
+                                    psr \
+                                        --config ${PSR_CONFIG_ARG} \
+                                        --step container-image-static-vulnerability-scan
+                                """
                             }
                         }
                     }
